@@ -1,51 +1,83 @@
+
 import express from "express";
+import OpenAI from "openai";
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
-app.use(express.json());
-app.use(express.static("."));
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+app.use(express.json({ limit: "20kb" }));
+
+// Allow requests from your GitHub Pages website.
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigin =
+    "https://hemavarshni05-a07.github.io";
+
+  if (origin === allowedOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    res.setHeader("Vary", "Origin");
+  }
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 
 app.post("/api/spark-ai", async (req, res) => {
   try {
-    const question = req.body.question;
+    const question = req.body?.question;
 
-    if (!question) {
+    if (
+      typeof question !== "string" ||
+      !question.trim()
+    ) {
       return res.status(400).json({
         error: "Please enter a question."
       });
     }
 
-    const response = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "llama3.2:1b",
-        prompt: `You are Spark AI, a helpful learning assistant. Answer simply: ${question}`,
-        stream: false
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Ollama is not responding");
+    if (question.length > 4000) {
+      return res.status(400).json({
+        error: "Please use a shorter question."
+      });
     }
 
-    const data = await response.json();
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      instructions:
+        "You are Spark AI, a friendly learning assistant. " +
+        "Help with learning, coding, projects and communication. " +
+        "Answer clearly and simply.",
+      input: question.trim()
+    });
 
     res.json({
-      answer: data.response
+      answer: response.output_text
     });
   } catch (error) {
-    console.error(error);
+    console.error("Spark AI request failed:", error.message);
 
     res.status(500).json({
-      error: "Ollama connect aagala. Ollama running-la irukka nu check pannu."
+      error: "Spark AI could not reply. Please try again."
     });
   }
 });
 
-app.listen(port, () => {
-  console.log(`SkillSpark running at http://localhost:${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Spark AI server running on port ${port}`);
 });
