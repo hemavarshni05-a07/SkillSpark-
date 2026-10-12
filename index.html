@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSpark</title>
+
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+
+    body {
+      margin: 0;
+      background: #f5f1ff;
+      color: #211b35;
+    }
+
+    header {
+      background: white;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: wrap;
+    }
+
+    .logo { font-size: 27px; font-weight: bold; color: #6842d8; }
+
+    .credits {
+      background: #eee7ff;
+      color: #5b32c5;
+      padding: 10px 15px;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+
+    nav {
+      background: white;
+      padding: 12px;
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      border-bottom: 1px solid #ddd;
+    }
+
+    button {
+      border: none;
+      background: #6842d8;
+      color: white;
+      padding: 11px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    nav button { background: #f0edf7; color: #302447; white-space: nowrap; }
+    nav button:hover { background: #e4d9ff; }
+
+    main { max-width: 1100px; margin: auto; padding: 22px; }
+    h1 { color: #241b3d; }
+
+    .card {
+      background: white;
+      padding: 21px;
+      border-radius: 17px;
+      margin-bottom: 18px;
+      box-shadow: 0 5px 20px rgba(50, 30, 80, 0.08);
+    }
+
+    .apps, .tasks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 13px;
+    }
+
+    .app {
+      background: #faf8ff;
+      border: 1px solid #e4dff0;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      text-decoration: none;
+      color: #222;
+    }
+
+    .app span { display: block; font-size: 30px; margin-bottom: 8px; }
+    .task { border: 1px solid #e4dff0; border-radius: 14px; padding: 17px; }
+    .task button { margin-top: 5px; }
+
+    textarea, input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d8d0e5;
+      border-radius: 10px;
+      margin: 7px 0 12px;
+      font-size: 15px;
+    }
+
+    textarea { min-height: 110px; resize: vertical; }
+    #answer, .notice {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f0ebff;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .quiz-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px;
+      margin: 7px 0;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      background: white;
+      color: #211b35;
+    }
+
+    .quiz-option.selected { background: #ddd0ff; }
+    .hidden { display: none !important; }
+    .muted { color: #716a80; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="logo">SkillSpark ✨</div>
+  <div class="credits">💳 <span id="creditCount">0</span> Credits</div>
+</header>
+
+<nav>
+  <button onclick="showSection('home')">🏠 Home</button>
+  <button onclick="showSection('dashboard')">📊 Dashboard</button>
+  <button onclick="showSection('apps')">🌐 Quick Apps</button>
+  <button onclick="showSection('tasks')">🎯 Task Marketplace</button>
+  <button onclick="showSection('portfolio')">📁 My Portfolio</button>
+  <button onclick="showSection('business')">💼 Business Hub</button>
+  <button onclick="showSection('spark')">🤖 Spark AI</button>
+  <button onclick="showSection('credits')">💎 Credits & Rewards</button>
+</nav>
+
+<main>
+  <section id="home">
+    <h1>Welcome to SkillSpark 👋</h1>
+    <div class="card">
+      <h2>Learn • Work • Earn • Grow</h2>
+      <p>Build skills, complete quizzes, save projects and track your learning progress.</p>
+      <button onclick="showSection('dashboard')">Open Dashboard</button>
+      <button onclick="showSection('spark')">Ask Spark AI</button>
+    </div>
+
+    <div class="card">
+      <h2>⚡ Quick Apps</h2>
+      <div class="apps">
+        <a class="app" href="https://www.google.com/" target="_blank" rel="noopener noreferrer"><span>🔎</span>Google</a>
+        <a class="app" href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer"><span>🌐</span>Chrome</a>
+        <a class="app" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer"><span>🤖</span>ChatGPT</a>
+        <a class="app" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><span>▶️</span>YouTube</a>
+        <a class="app" href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer"><span>💬</span>WhatsApp Web</a>
+        <a class="app" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><span>📸</span>Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <h1>📊 My Dashboard</h1>
+    <div class="card">
+      <h2>Your Learning Progress</h2>
+      <p class="muted">Your progress is saved in this browser on this device.</p>
+      <div class="tasks">
+        <div class="task"><h3>💳 Credits</h3><h2 id="dashCredits">0</h2></div>
+        <div class="task"><h3>🎯 Completed Quizzes</h3><h2 id="dashCompleted">0</h2></div>
+        <div class="task"><h3>⭐ Demo Skill Score</h3><h2 id="dashScore">0</h2></div>
+        <div class="task"><h3>📁 Saved Projects</h3><h2 id="dashProjects">0</h2></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apps" class="hidden">
+    <h1>🌐 Quick Apps</h1>
+    <div class="card">
+      <p>Open frequently used websites from here.</p>
+      <div class="apps">
+        <a class="app" href="https://www.google.com/" target="_blank" rel="noopener noreferrer"><span>🔎</span>Google</a>
+        <a class="app" href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer"><span>🌐</span>Chrome</a>
+        <a class="app" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer"><span>🤖</span>ChatGPT</a>
+        <a class="app" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><span>▶️</span>YouTube</a>
+        <a class="app" href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer"><span>💬</span>WhatsApp Web</a>
+        <a class="app" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><span>📸</span>Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tasks" class="hidden">
+    <h1>🎯 Task Marketplace</h1>
+    <div class="card">
+      <p>Answer all questions and submit. Each quiz can earn rewards once in this browser.</p>
+      <div class="tasks">
+        <div class="task">
+          <h3>🟢 Normal Quiz</h3><p>Reward up to 10 credits</p>
+          <button onclick="startQuiz('normal')">Start Quiz</button>
+        </div>
+        <div class="task">
+          <h3>🟡 Medium Quiz</h3><p>Reward up to 50 credits</p>
+          <button onclick="startQuiz('medium')">Start Quiz</button>
+        </div>
+        <div class="task">
+          <h3>🔴 Hard Quiz</h3><p>Reward up to 100 credits</p>
+          <button onclick="startQuiz('hard')">Start Quiz</button>
+        </div>
+      </div>
+    </div>
+    <div id="quizArea" class="card hidden"></div>
+  </section>
+
+  <section id="portfolio" class="hidden">
+    <h1>📁 My Portfolio</h1>
+    <div class="card">
+      <p>Save your project name and description.</p>
+      <input id="projectName" placeholder="Project name" maxlength="100">
+      <textarea id="projectDescription" placeholder="Describe your project" maxlength="2000"></textarea>
+      <button onclick="saveProject()">Save Project</button>
+      <div id="projectList"></div>
+    </div>
+  </section>
+
+  <section id="business" class="hidden">
+    <h1>💼 Business Hub</h1>
+    <div class="card">
+      <h2>Business Idea Planner</h2>
+      <p>Record your idea, target audience, budget and next steps.</p>
+      <textarea id="businessIdea" placeholder="Describe your business idea..." maxlength="4000"></textarea>
+      <button onclick="saveBusinessIdea()">Save Business Idea</button>
+      <div id="businessSaved" class="notice"></div>
+    </div>
+  </section>
+
+  <section id="spark" class="hidden">
+    <h1>🤖 Spark AI</h1>
+    <div class="card">
+      <p>Ask about coding, studies, projects and skill development.</p>
+      <textarea id="question" placeholder="Ask your question..." maxlength="4000"></textarea>
+      <button id="askButton" onclick="askSparkAI()">Ask Spark AI</button>
+      <div id="answer" role="status" aria-live="polite">Your answer will appear here.</div>
+    </div>
+  </section>
+
+  <section id="credits" class="hidden">
+    <h1>💎 Credits & Rewards</h1>
+    <div class="card">
+      <h2>Current Credits: <span id="creditPage">0</span></h2>
+      <p>Earn demo credits by completing quizzes. These are points in this prototype, not real money.</p>
+      <h3>Completed Quizzes: <span id="creditQuizzes">0</span></h3>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const STORAGE = {
+  credits: "skillsparkCredits",
+  completed: "skillsparkCompleted",
+  completedLevels: "skillsparkCompletedLevels",
+  projects: "skillsparkProjects",
+  business: "skillsparkBusinessIdea"
+};
+
+function readNumber(key) {
+  const value = Number(localStorage.getItem(key));
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
+
+let credits = readNumber(STORAGE.credits);
+let completedQuizzes = readNumber(STORAGE.completed);
+let completedLevels = readJSON(STORAGE.completedLevels, []);
+
+function readJSON(key, fallback) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveNumber(key, value) {
+  localStorage.setItem(key, String(value));
+}
+
+function updateCredits() {
+  document.getElementById("creditCount").textContent = credits;
+  document.getElementById("creditPage").textContent = credits;
+  saveNumber(STORAGE.credits, credits);
+  updateDashboard();
+}
+
+function updateDashboard() {
+  document.getElementById("dashCredits").textContent = credits;
+  document.getElementById("dashCompleted").textContent = completedQuizzes;
+  document.getElementById("dashScore").textContent = completedQuizzes * 10;
+  document.getElementById("creditQuizzes").textContent = completedQuizzes;
+  document.getElementById("dashProjects").textContent = readJSON(STORAGE.projects, []).length;
+}
+
+function showSection(id) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  document.querySelectorAll("main section").forEach(section => {
+    section.classList.add("hidden");
+  });
+
+  target.classList.remove("hidden");
+  updateDashboard();
+
+  if (id === "portfolio") renderProjects();
+  if (id === "business") loadBusinessIdea();
+}
+
+const quizzes = {
+  normal: {
+    reward: 10,
+    questions: [
+      { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Chennai", "Kolkata"], answer: 1 },
+      { q: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Venus", "Jupiter"], answer: 1 },
+      { q: "How many days are there in a leap year?", options: ["365", "366", "364", "360"], answer: 1 }
+    ]
+  },
+  medium: {
+    reward: 50,
+    questions: [
+      { q: "Which gas is most abundant in Earth's atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], answer: 1 },
+      { q: "Which instrument measures atmospheric pressure?", options: ["Thermometer", "Barometer", "Hygrometer", "Ammeter"], answer: 1 },
+      { q: "Which is the largest ocean?", options: ["Atlantic", "Indian", "Pacific", "Arctic"], answer: 2 }
+    ]
+  },
+  hard: {
+    reward: 100,
+    questions: [
+      { q: "Which branch of mathematics studies properties preserved under continuous deformation?", options: ["Statistics", "Topology", "Algebra", "Geometry"], answer: 1 },
+      { q: "What is Avogadro's constant approximately?", options: ["6.022 × 10²³", "3.14 × 10⁸", "9.81 × 10²", "1.602 × 10⁻¹⁹"], answer: 0 },
+      { q: "Which planet has the shortest rotation period?", options: ["Earth", "Mars", "Jupiter", "Venus"], answer: 2 }
+    ]
+  }
+};
+
+let activeQuiz = null;
+let answers = {};
+let quizSubmitted = false;
+
+function startQuiz(level) {
+  const area = document.getElementById("quizArea");
+  const quiz = quizzes[level];
+
+  if (!quiz) return;
+
+  activeQuiz = level;
+  answers = {};
+  quizSubmitted = false;
+  area.classList.remove("hidden");
+
+  let html = `<h2>${level.toUpperCase()} Quiz</h2>`;
+
+  if (completedLevels.includes(level)) {
+    html += `<p class="notice">You have already completed this quiz. You can practise again, but it will not award credits a second time.</p>`;
+  }
+
+  quiz.questions.forEach((question, index) => {
+    html += `<div class="task"><h3>${index + 1}. ${escapeHTML(question.q)}</h3>`;
+
+    question.options.forEach((option, optionIndex) => {
+      html += `<button type="button" class="quiz-option" id="q${index}_${optionIndex}" onclick="selectAnswer(${index}, ${optionIndex})">${escapeHTML(option)}</button>`;
+    });
+
+    html += `</div>`;
+  });
+
+  html += `<p id="quizResult" class="notice">Select an answer for each question.</p>
+    <button type="button" id="submitQuiz" onclick="finishQuiz()">Submit Quiz</button>`;
+
+  area.innerHTML = html;
+  area.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function selectAnswer(questionIndex, optionIndex) {
+  if (quizSubmitted || !activeQuiz) return;
+
+  answers[questionIndex] = optionIndex;
+
+  for (let i = 0; i < quizzes[activeQuiz].questions[questionIndex].options.length; i++) {
+    const button = document.getElementById(`q${questionIndex}_${i}`);
+    if (button) button.classList.toggle("selected", i === optionIndex);
+  }
+}
+
+function finishQuiz() {
+  if (!activeQuiz || quizSubmitted) return;
+
+  const quiz = quizzes[activeQuiz];
+  const result = document.getElementById("quizResult");
+
+  if (Object.keys(answers).length !== quiz.questions.length) {
+    result.textContent = "Please answer every question before submitting.";
+    return;
+  }
+
+  quizSubmitted = true;
+
+  let correct = 0;
+  quiz.questions.forEach((question, index) => {
+    if (answers[index] === question.answer) correct++;
+  });
+
+  let earned = 0;
+
+  if (!completedLevels.includes(activeQuiz)) {
+    earned = Math.round(quiz.reward * correct / quiz.questions.length);
+    credits += earned;
+    completedQuizzes++;
+    completedLevels.push(activeQuiz);
+
+    localStorage.setItem(STORAGE.completedLevels, JSON.stringify(completedLevels));
+    saveNumber(STORAGE.completed, completedQuizzes);
+    updateCredits();
+  }
+
+  result.textContent = `You got ${correct}/${quiz.questions.length}. You earned ${earned} credits${earned === 0 ? "" : "!"} ${earned === 0 && completedLevels.includes(activeQuiz) ? "A quiz can award credits only once." : ""}`;
+  document.getElementById("submitQuiz").disabled = true;
+  document.getElementById("submitQuiz").textContent = "Submitted";
+  updateDashboard();
+}
+
+function escapeHTML(value) {
+  const element = document.createElement("div");
+  element.textContent = String(value ?? "");
+  return element.innerHTML;
+}
+
+function saveProject() {
+  const name = document.getElementById("projectName").value.trim();
+  const description = document.getElementById("projectDescription").value.trim();
+
+  if (!name) {
+    alert("Please enter a project name.");
+    return;
+  }
+
+  const projects = readJSON(STORAGE.projects, []);
+  projects.push({ name, description });
+  localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
+
+  document.getElementById("projectName").value = "";
+  document.getElementById("projectDescription").value = "";
+  renderProjects();
+  updateDashboard();
+}
+
+function renderProjects() {
+  const projects = readJSON(STORAGE.projects, []);
+  const list = document.getElementById("projectList");
+
+  if (!projects.length) {
+    list.innerHTML = "<p class='muted'>No projects saved yet.</p>";
+    updateDashboard();
+    return;
+  }
+
+  list.innerHTML = projects.map((project, index) => `
+    <div class="task" style="margin-top:12px">
+      <h3>${escapeHTML(project.name)}</h3>
+      <p>${escapeHTML(project.description)}</p>
+      <button type="button" onclick="deleteProject(${index})">Delete</button>
+    </div>
+  `).join("");
+
+  updateDashboard();
+}
+
+function deleteProject(index) {
+  const projects = readJSON(STORAGE.projects, []);
+  if (index < 0 || index >= projects.length) return;
+
+  projects.splice(index, 1);
+  localStorage.setItem(STORAGE.projects, JSON.stringify(projects));
+  renderProjects();
+}
+
+function saveBusinessIdea() {
+  const idea = document.getElementById("businessIdea").value.trim();
+
+  if (!idea) {
+    alert("Please enter your business idea.");
+    return;
+  }
+
+  localStorage.setItem(STORAGE.business, idea);
+  document.getElementById("businessSaved").textContent = "Your business idea has been saved in this browser.";
+}
+
+function loadBusinessIdea() {
+  const saved = localStorage.getItem(STORAGE.business) || "";
+  document.getElementById("businessIdea").value = saved;
+  document.getElementById("businessSaved").textContent = saved
+    ? "Your saved business idea is ready to edit."
+    : "No business idea saved yet.";
+}
+
+async function askSparkAI() {
+  const question = document.getElementById("question").value.trim();
+  const answer = document.getElementById("answer");
+  const button = document.getElementById("askButton");
+
+  if (!question) {
+    answer.textContent = "Please enter a question.";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Thinking...";
+  answer.textContent = "Spark AI is thinking...";
+
+  try {
+    const response = await fetch("/api/spark-ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI request failed");
+    }
+
+    answer.textContent = data.answer || "No answer was returned.";
+  } catch (error) {
+    answer.textContent = "Spark AI could not connect. Check that the Node.js server and Ollama are running and the model is available.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Ask Spark AI";
+  }
+}
+
+updateCredits();
+updateDashboard();
+loadBusinessIdea();
+renderProjects();
+</script>
+</body>
+</html>
