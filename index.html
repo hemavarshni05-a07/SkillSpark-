@@ -510,6 +510,7 @@ function loadBusinessIdea() {
 }
 
 async function askSparkAI() {
+  async function askSparkAI() {
   const question = document.getElementById("question").value.trim();
   const answer = document.getElementById("answer");
   const button = document.getElementById("askButton");
@@ -524,11 +525,16 @@ async function askSparkAI() {
   answer.textContent = "Spark AI is thinking...";
 
   try {
-    const response = await fetch("/api/spark-ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question })
-    });
+    const response = await fetch(
+      "https://skillspark-ai.onrender.com/api/spark-ai",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question })
+      }
+    );
 
     const data = await response.json();
 
@@ -538,7 +544,9 @@ async function askSparkAI() {
 
     answer.textContent = data.answer || "No answer was returned.";
   } catch (error) {
-    answer.textContent = "Spark AI could not connect. Check that the Node.js server and Ollama are running and the model is available.";
+    console.error("Spark AI error:", error);
+    answer.textContent =
+      "Spark AI could not connect. Please try again.";
   } finally {
     button.disabled = false;
     button.textContent = "Ask Spark AI";
