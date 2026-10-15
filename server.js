@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(express.json({ limit: "20kb" }));
-
+app.use(express.static(__dirname));
 // Allow requests from your GitHub Pages website.
 app.use((req, res, next) => {
   const origin = req.headers.origin;
